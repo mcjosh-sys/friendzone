@@ -46,7 +46,8 @@ const Profile = () => {
     mutation.mutate(followers.includes(currentUser.id))
   }
 
-  
+  const isProfilePicUrl = user && regex.test(user.profilePic)
+  const isCoverPicUrl = user && regex.test(user.coverPic)
   return (
     <div className="profile">
       {isLoading ? "Loading..." : <>
@@ -57,7 +58,7 @@ const Profile = () => {
           className="cover"
         />
         <img
-          src={regex.test(user.profilePic) ? user.profilePic : "../uploads/"+user.profilePic}
+          src={isProfilePicUrl ? user.profilePic : "../uploads/"+user.profilePic}
           alt=""
           className="profilePic"
         />
@@ -86,11 +87,11 @@ const Profile = () => {
             <div className="info">
               <div className="item">
                 <PlaceIcon />
-                <span>USA</span>
+                <span>{user.city}</span>
               </div>
               <div className="item">
                 <LanguageIcon />
-                <span>lama.dev</span>
+                <span>{user.website}</span>
               </div>
             </div>
             {userId===currentUser.id? <button onClick={()=>setOpenUpdate(true)}>Update</button>: 

@@ -15,6 +15,10 @@ import { AuthContext } from "../../context/authContext";
 const Post = ({ post, userId }) => {
   const [commentOpen, setCommentOpen] = useState(false);
   const regex = /(https?:\/\/[^\s]+)/g
+  const regex2 = /(https?:\/\/[^\s]+)/g
+  const isProfilePicUrl = regex.test(post.profilePic)
+  const isImgUrl = regex2.test(post.img)
+
   const {currentUser} = useContext(AuthContext)
 
   const queryClient =  useQueryClient()
@@ -50,7 +54,7 @@ const Post = ({ post, userId }) => {
       <div className="container">
         <div className="user">
           <div className="userInfo">
-            <img src={post.profilePic} alt="" />
+            <img src={isProfilePicUrl ? post.profilePic : userId ? "../uploads/"+post.profilePic: "./uploads/"+post.profilePic} alt="" />
             <div className="details">
               <Link
                 to={`/profile/${post.userId}`}
@@ -65,7 +69,7 @@ const Post = ({ post, userId }) => {
         </div>
         <div className="content">
           <p>{post.desc}</p>
-          <img src={regex.test(post.img) ? post.img : userId ? "../uploads/"+post.img: "./uploads/"+post.img} alt="" onDoubleClick={handleLikes}/>
+          <img src={isImgUrl ? post.img : userId ? "../uploads/"+post.img: "./uploads/"+post.img} alt="" onDoubleClick={handleLikes}/>
         </div>
         <div className="info">
           <div className="item">

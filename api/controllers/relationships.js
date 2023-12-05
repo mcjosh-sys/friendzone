@@ -12,48 +12,32 @@ export const getRelationship = (req, res) => {
 
 export const addRelationship = (req, res) => {
 
-    const token = req.cookies.accessToken;
+    const q = "INSERT INTO relationships (`followerUserId`, `followedUserId`) VALUES (?) "
 
-    if(!token) return res.status(401).json("Not logged in!")
+    const values = [
+        req.userInfo.id,
+        req.body.userId
+    ]
 
-    jwt.verify(token, "secretkey", (err, userInfo)=>{
-        if(err) return res.status(403).json("Token is not valid!")
+    db.query(q,[values], (err,data)=>{
+        if(err) return res.status(500).json(err)
+        return res.status(200).json("Following")
+        })
 
-        const q = "INSERT INTO relationships (`followerUserId`, `followedUserId`) VALUES (?) "
-
-        const values = [
-            userInfo.id,
-            req.body.userId
-        ]
-    
-        db.query(q,[values], (err,data)=>{
-            if(err) return res.status(500).json(err)
-            return res.status(200).json("Following")
-         })
-
-    })
 }
 
 export const deleteRelationship = (req, res) => {
 
-    const token = req.cookies.accessToken;
+    const q = "DELETE FROM relationships WHERE followerUserId=? AND followedUserId=?"
 
-    if(!token) return res.status(401).json("Not logged in!")
+    const values = [
+        req.userInfo.id,
+        req.query.userId
+    ]
 
-    jwt.verify(token, "secretkey", (err, userInfo)=>{
-        if(err) return res.status(403).json("Token is not valid!")
+    db.query(q,[...values], (err,data)=>{
+        if(err) return res.status(500).json(err)
+        return res.status(200).json("Not following")
+        })
 
-        const q = "DELETE FROM relationships WHERE followerUserId=? AND followedUserId=?"
-
-        const values = [
-            userInfo.id,
-            req.query.userId
-        ]
-    
-        db.query(q,[...values], (err,data)=>{
-            if(err) return res.status(500).json(err)
-            return res.status(200).json("Not following")
-         })
-
-    })
 }
